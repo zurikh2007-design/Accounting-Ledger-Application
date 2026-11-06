@@ -7,6 +7,7 @@ import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Comparator;
+import java.nio.file.Files;
 
 public class TransactionManager {
     private List<Transaction> transactions = new ArrayList<>();
@@ -44,6 +45,11 @@ public class TransactionManager {
 
 
         }
+
+        transactions.sort(
+                (item1, item2) -> item2.getDate().compareTo(item1.getDate())
+        );
+
 
         System.out.println("Number of lines: " + lines.size());
     }

@@ -25,4 +25,8 @@ public class Transaction {
         // Return a String representing this transaction
         return date.toString() + " " + time.toString() + " " + description + " " + vendor + " " + amount;
     }
+
+    public LocalDate getDate() {
+        return date;
+    }
 }
