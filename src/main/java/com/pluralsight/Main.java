@@ -1,64 +1,115 @@
 package com.pluralsight;
 
 import java.io.IOException;
-import java.sql.SQLOutput;
-import java.util.List;
-import java.util.Scanner;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Scanner;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    public static void main(String[] args)  throws IOException {
+
+    public static void main(String[] args) {
+
         Scanner scanner = new Scanner(System.in);
-        String opt = "";
 
+        TransactionManager manager = new TransactionManager();
 
-        while (!opt.equals("x")) {
-            System.out.println("Welcome to the Financial Tracker!");
-            System.out.println("Options: ");
-            System.out.println(" D) Withdraw");
-            System.out.println(" P) Deposit");
-            System.out.println(" L) Check balance");
-            System.out.println(" X) Exit");
+        try {
+            manager.readTransactions();
 
-            System.out.print("> ");
-            opt = scanner.nextLine();
+            boolean running = true;
 
-            switch (opt) {
-                case "d":
-                    System.out.println("Deposit selected");
-                    break;
+            while (running) {
 
-                case "p":
-                    System.out.println("Payment selected");
-                    break;
+                System.out.println("\n===== FINANCIAL TRACKER =====");
+                System.out.println("D) Add Deposit");
+                System.out.println("P) Make Payment");
+                System.out.println("L) Ledger");
+                System.out.println("X) Exit");
+                System.out.print("> ");
 
-                case "l":
-                    System.out.println("Ledger selected");
-                    break;
+                String choice = scanner.nextLine()
+                        .trim()
+                        .toUpperCase();
 
-                case "x":
-                    System.out.println("Exit selected");
-                    break;
+                switch (choice) {
 
-                default:
-                    System.out.println("Invalid choice");
+                    case "D":
+                        addTransaction(scanner, manager, true);
+                        break;
+
+                    case "P":
+                        addTransaction(scanner, manager, false);
+                        break;
+
+                    case "L":
+                        manager.displayLedger(scanner);
+                        break;
+
+                    case "X":
+                        running = false;
+                        System.out.println("Goodbye!");
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice.");
+                }
+            }
+
+        } catch (IOException e) {
+            System.out.println("File error: " + e.getMessage());
+
+        } finally {
+            scanner.close();
+        }
+    }
+
+    private static void addTransaction(
+            Scanner scanner,
+            TransactionManager manager,
+            boolean deposit
+    ) throws IOException {
+
+        System.out.print("Description: ");
+        String description = scanner.nextLine().trim();
+
+        System.out.print("Vendor: ");
+        String vendor = scanner.nextLine().trim();
+
+        double amount;
+
+        while (true) {
+
+            System.out.print("Amount: ");
+
+            try {
+                amount = Double.parseDouble(scanner.nextLine());
+
+                if (amount <= 0) {
+                    System.out.println("Enter an amount greater than zero.");
+                    continue;
+                }
+
+                break;
+
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number.");
             }
         }
 
+        if (!deposit) {
+            amount = -amount;
+        }
 
+        Transaction transaction = new Transaction(
+                LocalDate.now(),
+                LocalTime.now(),
+                description,
+                vendor,
+                amount
+        );
 
+        manager.addTransaction(transaction);
 
-        //        TransactionManager manager = new TransactionManager();
-        //        manager.readTransactions();
-        //        List<Transaction> list = manager.getTransactions();
-        //        System.out.println("Number in List: " + list.size());
-        //
-        //        manager.displayTransactions();
-
-
-
+        System.out.println("Transaction saved successfully!");
     }
 }

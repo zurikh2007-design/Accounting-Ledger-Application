@@ -2,17 +2,17 @@ package com.pluralsight;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Transaction {
+
     private LocalDate date;
     private LocalTime time;
     private String description;
     private String vendor;
     private double amount;
 
-    public Transaction(LocalDate date, LocalTime time, String description, String vendor, double amount) {
+    public Transaction(LocalDate date, LocalTime time,
+                       String description, String vendor, double amount) {
         this.date = date;
         this.time = time;
         this.description = description;
@@ -20,13 +20,36 @@ public class Transaction {
         this.amount = amount;
     }
 
-    @Override
-    public String toString() {
-        // Return a String representing this transaction
-        return date.toString() + " " + time.toString() + " " + description + " " + vendor + " " + amount;
-    }
-
     public LocalDate getDate() {
         return date;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getVendor() {
+        return vendor;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public String toCsvLine() {
+        return date + "|" + time + "|" + description
+                + "|" + vendor + "|" + amount;
+    }
+
+    @Override
+    public String toString() {
+        return date + " " + time + " | "
+                + description + " | "
+                + vendor + " | $"
+                + String.format("%.2f", amount);
     }
 }
